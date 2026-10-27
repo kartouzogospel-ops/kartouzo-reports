@@ -1,0 +1,111 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+RAPPORTS="$HOME/signalements.txt"
+
+while true; do
+clear
+echo "══════════════════════════════════════"
+echo "       🔥 KARTOUZO REPORT 🔥"
+echo "          VERSION 3.0"
+echo "══════════════════════════════════════"
+echo "1. Signaler un numéro"
+echo "2. Voir les signalements"
+echo "3. Rechercher un signalement"
+echo "4. Préparer un rapport"
+echo "5. Supprimer un rapport"
+echo "6. Statistiques des rapports"
+echo "7. Préparer un message WhatsApp"
+echo "8. Gérer les rapports"
+echo "9. Informations sur les restrictions"
+echo "10. Demander l'examen d'un compte"
+echo "0. Quitter"
+echo "══════════════════════════════════════"
+
+read -rp "Choisis une option : " choix
+
+case "$choix" in
+1)
+read -rp "Numéro concerné : " numero
+read -rp "Cause réelle du signalement : " raison
+printf '%s | %s | %s\n' "$numero" "$raison" "$(date)" >> "$RAPPORTS"
+echo "Rapport enregistré."
+read -rp "Entrée pour continuer..."
+;;
+2)
+if [ -f "$RAPPORTS" ]; then
+cat "$RAPPORTS"
+else
+echo "Aucun rapport enregistré."
+fi
+read -rp "Entrée pour continuer..."
+;;
+3)
+read -rp "Numéro à rechercher : " numero
+if [ -f "$RAPPORTS" ]; then
+grep -F -- "$numero" "$RAPPORTS" || echo "Aucun résultat."
+else
+echo "Aucun rapport enregistré."
+fi
+read -rp "Entrée pour continuer..."
+;;
+4)
+read -rp "Numéro : " numero
+read -rp "Description des faits : " raison
+printf 'Numéro : %s\nDescription : %s\nDate : %s\n' \
+"$numero" "$raison" "$(date)" > "$HOME/rapport_kartouzo.txt"
+echo "Rapport créé dans rapport_kartouzo.txt"
+read -rp "Entrée pour continuer..."
+;;
+5)
+read -rp "Supprimer tous les rapports ? (o/n) : " confirmation
+if [ "$confirmation" = "o" ]; then
+rm -f "$RAPPORTS" "$HOME/rapport_kartouzo.txt"
+echo "Rapports supprimés."
+else
+echo "Annulé."
+fi
+read -rp "Entrée pour continuer..."
+;;
+6)
+if [ -f "$RAPPORTS" ]; then
+echo "Nombre de rapports : $(wc -l < "$RAPPORTS")"
+else
+echo "Nombre de rapports : 0"
+fi
+read -rp "Entrée pour continuer..."
+;;
+7)
+read -rp "Numéro concerné : " numero
+read -rp "Décris les faits réels : " raison
+printf 'Bonjour, je souhaite signaler le numéro %s.\nMotif : %s\nMerci d’examiner ce signalement.\n' \
+"$numero" "$raison" > "$HOME/message_whatsapp.txt"
+echo "Message enregistré dans message_whatsapp.txt"
+echo "Vérifie les faits avant de transmettre le message."
+read -rp "Entrée pour continuer..."
+;;
+8)
+echo "Les signalements doivent correspondre à des faits réels."
+echo "L'envoi automatisé de signalements en masse est désactivé."
+read -rp "Entrée pour continuer..."
+;;
+9)
+echo "Le risque réel de suspension ne peut pas être calculé ici."
+echo "Consulte les règles officielles de WhatsApp."
+read -rp "Entrée pour continuer..."
+;;
+10)
+echo "Prépare une demande d'examen honnête de ton compte."
+echo "Consulte le centre d'aide officiel :"
+echo "https://www.whatsapp.com/contact/"
+read -rp "Entrée pour continuer..."
+;;
+0)
+echo "Au revoir KARTOUZO !"
+exit 0
+;;
+*)
+echo "Option invalide."
+sleep 1
+;;
+esac
+done
